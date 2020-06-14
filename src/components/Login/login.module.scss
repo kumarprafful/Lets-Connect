@@ -1,0 +1,45 @@
+.container {
+  background-image: url("../../assets/img/bg.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 100%;
+  opacity: 1;
+}
+
+.loginContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  // width: 90%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.479);
+//   color: #fff !important;
+  h1,label{
+  color: #fff !important;
+  }
+  input{
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.041);
+      color: #fff;
+  }
+  input::placeholder{
+    //   color: ;
+  }
+}
+.input {
+  label,
+  input, input:active{
+    color: #fff;
+  }
+}
+
+.changeScreenMessage{
+    color: rgb(223, 219, 219);
+    cursor: pointer;
+    padding: 1rem 0;
+}
+.changeScreenMessage:hover{
+    color: #fff;
+}

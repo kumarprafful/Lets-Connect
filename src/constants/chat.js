@@ -1,0 +1,1 @@
+export const FETCH_CONTACT_LIST = 'FETCH_CONTACT_LIST'
