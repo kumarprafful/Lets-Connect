@@ -1,6 +1,7 @@
 export default class WebSocketService {
     constructor() {
         this.socket = null
+        this.newMessage = null
     }
 
     connect() {
@@ -17,6 +18,7 @@ export default class WebSocketService {
 
         this.socket.onmessage = (event) => {
             console.log('onmessage', event)
+            this._newMessage(event)
         }
 
         this.socket.onerror = (event) => {
@@ -25,6 +27,12 @@ export default class WebSocketService {
 
         this.socket.onclose = (event) => {
             console.log('onclose', event)
+        }
+    }
+
+    _newMessage(event) {
+        if (event) {
+            this.newMessage = JSON.parse(event['data'])
         }
     }
 }
