@@ -2,14 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { IconButton, Grid, Card, Avatar, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@material-ui/core'
 import { PlusOutlined, SendOutlined } from '@ant-design/icons'
-import { Input, message } from 'antd'
-
+import { Input } from 'antd'
+import { truncate } from '../../utils'
 import moment from 'moment'
 
 import styles from './chat.module.scss'
 import { chat } from '../../actions'
 
-let socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL)
 
 class Chat extends Component {
     constructor(props) {
@@ -17,6 +16,33 @@ class Chat extends Component {
         this.state = {
             selectedContact: null,
             msg: ''
+        }
+        this.socket = null
+    }
+
+    connect = () => {
+        this.socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL)
+        this.socket.onopen = (e) => {
+            console.log(e)
+            this.socket.send(JSON.stringify({
+                'authorization': `${this.props.token}`
+            }))
+        }
+
+        this.socket.onmessage = (e) => {
+            this.props.updateRoom(JSON.parse(e.data))
+        }
+
+        this.socket.onclose = (e) => {
+            console.log(e)
+            // setInterval(() => {
+            //     this.connect()
+            //     console.log('hi')
+            // }, 200)
+        }
+
+        this.socket.onerror = (e) => {
+            console.log(e)
         }
     }
 
@@ -30,29 +56,8 @@ class Chat extends Component {
                 this.setState({ loading: false })
             })
 
-        socket.onopen = (e) => {
-            console.log('connected', e)
-            socket.send(JSON.stringify({
-                'authorization': `${this.props.token}`
-            }))
-        }
-
-        socket.onmessage = (e) => {
-            console.log('message', e)
-            this.props.updateRoom(JSON.parse(e.data))
-        }
-
-        socket.onclose = (e) => {
-            console.log('close', e)
-        }
-
-        socket.onerror = (e) => {
-            console.log('error', e)
-        }
+        this.connect()
     }
-
-
-
 
     handleSelectContact = (contact) => {
         this.setState({
@@ -71,10 +76,9 @@ class Chat extends Component {
         event.preventDefault()
         const { msg, roomId } = this.state
         let message = msg.trim()
-        console.log(message)
         if (message) {
             try {
-                await socket.send(JSON.stringify({
+                await this.socket.send(JSON.stringify({
                     'message': {
                         'roomID': roomId,
                         'msg': message
@@ -93,8 +97,6 @@ class Chat extends Component {
         const { contacts, room, user } = this.props
         const { selectedContact, msg } = this.state
 
-        console.log('this.props', this.props)
-
         return (
             <Grid container className={styles.container}>
                 <Grid xs={3} className={styles.contacts}>
@@ -103,7 +105,7 @@ class Chat extends Component {
                             R
                         </Avatar>
                         <IconButton>
-                            <PlusOutlined />
+                            <PlusOutlined className={styles.lightIcon} />
                         </IconButton>
                     </Card>
                     <List>
@@ -115,6 +117,7 @@ class Chat extends Component {
                                         button
                                         key={contact.id}
                                         onClick={() => this.handleSelectContact(contact)}
+                                        className={selectedContact ? selectedContact.id === contact.id ? styles.active : '' : ''}
                                     >
                                         <ListItemAvatar>
                                             <Avatar>
@@ -122,8 +125,8 @@ class Chat extends Component {
                                             </Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            primary={contact.full_name}
-                                            secondary={contact.last_message.message}
+                                            primary={<p className={styles.name}>{contact.full_name}</p>}
+                                            secondary={truncate(contact.last_message.message, 40)}
                                         />
                                     </ListItem>
                                 ))
@@ -164,8 +167,10 @@ class Chat extends Component {
                                                     return (
                                                         <span className={styles.sentByOther}>
                                                             <span className={styles.msg}>
-                                                                {message.message}
-                                                                <span className={styles.timestamp}>{moment(message.created_at).format("hh:mm")}</span>
+                                                                <span>{message.message}</span>
+                                                                <span className={styles.timestamp}>
+                                                                    {moment(message.created_at).format("hh:mm")}
+                                                                </span>
                                                             </span>
                                                         </span>
                                                     )
@@ -183,8 +188,10 @@ class Chat extends Component {
                                             onChange={(event) => this.setState({ msg: event.target.value })}
                                             value={msg}
                                         />
-                                        <IconButton>
-                                            <SendOutlined type="submit" />
+                                        <IconButton
+                                            onClick={this.handleSendMessage}
+                                        >
+                                            <SendOutlined className={styles.lightIcon} type="submit" />
                                         </IconButton>
                                     </div>
                                 </form>

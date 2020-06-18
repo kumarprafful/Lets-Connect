@@ -21,10 +21,31 @@ export const authorize = (data) => async (dispatch, getState) => {
         )
         if (response.status === 200) {
             dispatch(loginUserSuccess(response.data.token))
+            return response.data
         }
     }
     catch (error) {
         throw error
     }
+}
 
+export const updateCustomerInfo = (data) => async (dispatch, getState) => {
+    const token = getState().auth.token
+    let headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`
+    }
+    try {
+        let response = await axios.post(
+            `${process.env.REACT_APP_API_URL}/accounts/update/`,
+            data,
+            { headers },
+        )
+        if (response.status === 200) {
+            return
+        }
+    }
+    catch (error) {
+        throw error
+    }
 }

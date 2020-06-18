@@ -12,7 +12,9 @@ class Login extends Component {
         super(props)
         this.state = {
             loading: false,
+            emailScreen: true,
             optScreen: false,
+            customerInfoScreen: false,
             email: null,
         }
     }
@@ -27,6 +29,7 @@ class Login extends Component {
             )
             if (response.status === 200) {
                 this.setState({
+                    emailScreen: false,
                     optScreen: true,
                     loading: false
                 })
@@ -39,17 +42,41 @@ class Login extends Component {
 
     handleAuthorization = (values) => {
         this.props.authorize(values)
-            .then(() => {
-                this.setState({
-                    loading: false,
-                    optScreen: false
-                })
-                this.props.history.push('/')
+            .then((response) => {
+                if (response.ask) {
+                    this.setState({
+                        loading: false,
+                        optScreen: false,
+                        customerInfoScreen: true,
+                    })
+                } else {
+                    this.setState({
+                        loading: false,
+                        optScreen: false
+                    })
+                    this.props.history.push('/')
+
+                }
+
             })
             .catch(error => {
                 message.error(error.message)
             })
     }
+
+    handleCustomerInfoSubmit = (values) => [
+        this.props.updateCustomerInfo(values)
+            .then(() => {
+                this.props.history.push('/')
+            })
+            .catch(error => {
+                if (error.response) {
+                    message.error(error.response.data.message)
+                } else {
+                    message.error(error.message)
+                }
+            })
+    ]
 
     renderEmailScreen = () => {
         return (
@@ -67,23 +94,6 @@ class Login extends Component {
                         onChange={(event) => this.setState({ email: event.target.value })}
                     />
                 </Form.Item>
-                {/* <Form.Item
-                        label="First Name"
-                        name="first_name"
-                    >
-                        <Input
-                            placeholder="First Name"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        label="Last Name"
-                        name="last_name"
-                    >
-                        <Input
-                            placeholder="Last Name"
-                        />
-                    </Form.Item> */}
-                {/* <Form.Item> */}
                 <Button
                     type="primary"
                     htmlType="submit"
@@ -91,7 +101,6 @@ class Login extends Component {
                 >
                     Send OTP
                 </Button>
-                {/* </Form.Item> */}
             </Form>
         )
 
@@ -110,7 +119,7 @@ class Login extends Component {
                     extra={
                         <>
                             <span
-                                onClick={() => this.setState({ optScreen: false })}
+                                onClick={() => this.setState({ optScreen: false, emailScreen: true })}
                                 className={styles.changeScreenMessage}
                             >
                                 Change?
@@ -143,21 +152,56 @@ class Login extends Component {
         )
     }
 
-    render() {
-        const { optScreen } = this.state
-        console.log(this.props)
+    renderCustomerInfoScreen = () => {
+        return (
+            <Form
+                layout="vertical"
+                onFinish={this.handleCustomerInfoSubmit}
+            >
+                <Form.Item
+                    name="first_name"
+                    label="First Name"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'This is required'
+                        }
+                    ]}
+                >
+                    <Input placeholder="First Name" />
+                </Form.Item>
 
+                <Form.Item
+                    name="last_name"
+                    label="Last Name"
+                >
+                    <Input placeholder="Last Name" />
+                </Form.Item>
+                <Button type="primary" htmlType="submit">Get Started</Button>
+            </Form>
+        )
+    }
+
+    renderScreens = () => {
+        const { emailScreen, optScreen, customerInfoScreen } = this.state
+        if (emailScreen) {
+            return this.renderEmailScreen()
+        }
+        else if (optScreen) {
+            return this.renderOTPScreen()
+        }
+        else if (customerInfoScreen) {
+            return this.renderCustomerInfoScreen()
+        }
+
+    }
+
+    render() {
         return (
             <div className={styles.container} >
                 <div className={styles.loginContainer}>
                     <h1>Let's Connect</h1>
-                    {
-                        !optScreen
-                            ?
-                            this.renderEmailScreen()
-                            :
-                            this.renderOTPScreen()
-                    }
+                    {this.renderScreens()}
                 </div>
             </div>
         )
@@ -170,6 +214,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     authorize: (data) => dispatch(auth.authorize(data)),
+    updateCustomerInfo: (data) => dispatch(auth.updateCustomerInfo(data)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

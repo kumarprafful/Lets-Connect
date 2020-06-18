@@ -23,15 +23,27 @@ export default function chat(state = initialState, action) {
         case UPDATE_ROOM:
             let initial = state.initialMessages
             let iContactList = state.contactList
-
+            console.log('//', action.data)
             if (initial) {
                 if (initial['id'] === action.data['roomID']) {
                     initial['messages'].unshift(action.data['messageObj'])
                 }
-                // if (iContactList) {
-                //     const index = iContactList.contacts.map(x => x.id == action.data)
-                // }
-                return { ...state, initialMessages: { ...state.initialMessages, initial } }
+                if (iContactList) {
+                    console.log(';;;', iContactList)
+                    const index = iContactList.findIndex(x => x.room_id === action.data['roomID'])
+                    console.log('index ==> ',index, action.data['roomID'])
+                    let contact = iContactList.splice(index, 1)
+                    console.log('contact', contact)
+                    contact[0]['last_message'] = action.data['messageObj']
+                    console.log("11", contact[0])
+                    iContactList.unshift(contact[0])
+                    console.log('[[[', iContactList)
+                }
+                return {
+                    ...state,
+                    initialMessages: { ...state.initialMessages, initial },
+                    contactList: [...iContactList],
+                }
             }
             return state
 
