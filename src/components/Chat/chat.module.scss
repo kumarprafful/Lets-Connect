@@ -1,3 +1,5 @@
+$border-primary-color: #b2102f;
+
 .container {
   max-height: 100vh;
   min-height: 100vh;
@@ -15,14 +17,15 @@ input {
 }
 
 .contacts {
-  background-color: #080311;
+  //   background-color: #080311;
+  height: 100%;
   .profileSection {
     max-height: 4rem;
     min-height: 4rem;
     border-radius: 0;
     box-shadow: none;
-    background-color: #080311;
-    border-bottom: 1px solid rgb(0, 47, 255);
+    // background-color: #080311;
+    border-bottom: 1px solid $border-primary-color;
     padding: 0.5rem;
     display: flex;
     align-items: center;
@@ -32,7 +35,7 @@ input {
 
 .messages {
   position: relative;
-  background-color: #080311fb;
+  //   background-color: #080311fb;
 
   max-height: 100vh;
   .messageSection {
@@ -40,8 +43,8 @@ input {
     min-height: 4rem;
     border-radius: 0;
     box-shadow: none;
-    background-color: #080311fb;
-    border-bottom: 1px solid rgb(0, 47, 255);
+    // background-color: #080311fb;
+    border-bottom: 1px solid $border-primary-color;
     padding: 0.5rem;
     display: flex;
     align-items: center;
@@ -72,10 +75,18 @@ input {
     width: 100%;
     bottom: 0;
     padding: 0.5rem;
-    background-color: #080311;
     input {
-      height: 80%;
-      background-color: #080311;
+      height: 90%;
+      background-color: rgba(0, 0, 0, 0.678);
+      border: none;
+      outline: none;
+      letter-spacing: 0.5px;
+    }
+    input:focus {
+      box-shadow: none;
+    }
+    input::placeholder {
+      letter-spacing: 0.5px;
     }
   }
 }
@@ -128,10 +139,45 @@ input {
 }
 
 .active {
-  background-color: #15092c !important;
-  border-right: 3px solid #9e424b !important;
+  background-color: #2a2a2a !important;
+  border-right: 3px solid $border-primary-color !important;
 }
 
-.lightIcon{
-    color: rgb(228, 227, 227)!important;
+.lightIcon {
+  color: rgb(228, 227, 227) !important;
+}
+
+.invites {
+  .invitesSection {
+    height: 4rem;
+    border-bottom: 1px solid $border-primary-color;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    button {
+      margin: 0 10px;
+    }
+  }
+}
+
+.screenSection {
+  padding: 1rem;
+}
+
+.inviteModal {
+}
+.input {
+  border: none;
+  outline: none;
+  letter-spacing: 0.5px;
+  background-color: rgba(0, 0, 0, 0.678);
+  .input:hover {
+      border: none!important;
+  }
+  .input:focus {
+    box-shadow: none;
+  }
+  .input::placeholder {
+    letter-spacing: 0.5px;
+  }
 }

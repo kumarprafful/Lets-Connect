@@ -5,7 +5,7 @@ import axios from 'axios'
 import { Form, Input, Button, message } from 'antd'
 import styles from './login.module.scss'
 import { connect } from 'react-redux'
-import { auth } from '../../actions'
+import { users } from '../../actions'
 
 class Login extends Component {
     constructor(props) {
@@ -208,13 +208,11 @@ class Login extends Component {
     }
 }
 
-const mapStateToProps = (state) => ({
-
-})
+const mapStateToProps = (state) => ({})
 
 const mapDispatchToProps = (dispatch) => ({
-    authorize: (data) => dispatch(auth.authorize(data)),
-    updateCustomerInfo: (data) => dispatch(auth.updateCustomerInfo(data)),
+    authorize: (data) => dispatch(users.authorize(data)),
+    updateCustomerInfo: (data) => dispatch(users.updateCustomerInfo(data)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

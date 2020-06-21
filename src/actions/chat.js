@@ -10,7 +10,7 @@ export const fetchContacts = () => async (dispatch, getState) => {
     let headers = {
         'Content-Type': 'application/json',
     }
-    const token = getState().auth.token
+    const token = getState().users.token
 
     if (token) {
         headers['Authorization'] = `Token ${token}`
@@ -34,7 +34,7 @@ export const fetchInitialMessages = (data) => async (dispatch, getState) => {
     let headers = {
         'Content-Type': 'application/json',
     }
-    const token = getState().auth.token
+    const token = getState().users.token
 
     if (token) {
         headers['Authorization'] = `Token ${token}`
@@ -56,7 +56,7 @@ export const fetchInitialMessages = (data) => async (dispatch, getState) => {
 
 export const updateRoom = (data) => async (dispatch) => {
     if (data) {
-        console.log('------',data)
         dispatch({ type: UPDATE_ROOM, data: data })
     }
 }
+

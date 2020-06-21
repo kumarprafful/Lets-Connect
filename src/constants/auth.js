@@ -1,1 +1,2 @@
 export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS'
+export const GET_INVITES = 'GET_INVITES'

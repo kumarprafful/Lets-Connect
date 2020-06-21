@@ -33,7 +33,7 @@ class Routes extends Component {
 
 
 const mapStateToProps = state => ({
-    auth: state.auth,
+    auth: state.users,
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -1,7 +1,7 @@
-import * as auth from './auth'
+import * as users from './users'
 import * as chat from './chat'
 
 export {
-    auth,
+    users,
     chat,
 }
