@@ -171,13 +171,17 @@ input {
   outline: none;
   letter-spacing: 0.5px;
   background-color: rgba(0, 0, 0, 0.678);
+  input{
+    //   color: gold!important;
+  }
   .input:hover {
       border: none!important;
   }
   .input:focus {
     box-shadow: none;
   }
-  .input::placeholder {
+  ::placeholder {
     letter-spacing: 0.5px;
+    color: red;
   }
 }
